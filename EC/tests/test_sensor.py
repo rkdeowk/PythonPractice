@@ -7,66 +7,58 @@ from PythonPractice.EC.src.sensors.sensor3 import Sensor3
 
 class TestSensor(unittest.TestCase):
     def test_sensor1_connect(self):
-        sensor = Sensor1(1)
-        self.assertFalse(sensor.connected)
-        result = sensor.connect()
-        self.assertTrue(sensor.connected)
-        self.assertEqual(result, "Sensor 1 connected.")
+        self.fail()
 
     def test_sensor1_disconnect(self):
-        sensor = Sensor1(1)
-        sensor.connect()
-        result = sensor.disconnect()
-        self.assertFalse(sensor.connected)
-        self.assertEqual(result, "Sensor 1 disconnected.")
+        self.fail()
+
+    def test_sensor1_is_connected(self):
+        self.fail()
 
     def test_sensor1_read_data(self):
-        sensor = Sensor1(1)
-        sensor.connect()
-        data = sensor.read_data()
-        self.assertEqual(data, "Sensor1 data from 1")
+        self.fail()
 
     def test_sensor1_read_data_not_connected(self):
-        sensor = Sensor1(1)
-        with self.assertRaises(ConnectionError):
-            sensor.read_data()
+        self.fail()
 
     def test_sensor1_setting(self):
-        sensor = Sensor1(1)
-        settings = {"sensitivity": 10, "range": 100}
-        result = sensor.setting(**settings)
-        self.assertEqual(sensor.settings, settings)
-        self.assertEqual(result, f"Sensor 1 settings updated: {settings}")
+        self.fail()
 
     def test_sensor2_connect(self):
-        pass
+        self.fail()
 
     def test_sensor2_disconnect(self):
-        pass
+        self.fail()
+
+    def test_sensor2_is_connected(self):
+        self.fail()
 
     def test_sensor2_read_data(self):
-        pass
+        self.fail()
 
     def test_sensor2_read_data_not_connected(self):
-        pass
+        self.fail()
 
     def test_sensor2_setting(self):
-        pass
+        self.fail()
 
     def test_sensor3_connect(self):
-        pass
+        self.fail()
 
     def test_sensor3_disconnect(self):
-        pass
+        self.fail()
+
+    def test_sensor3_is_connected(self):
+        self.fail()
 
     def test_sensor3_read_data(self):
-        pass
+        self.fail()
 
     def test_sensor3_read_data_not_connected(self):
-        pass
+        self.fail()
 
     def test_sensor3_setting(self):
-        pass
+        self.fail()
 
 
 if __name__ == '__main__':
