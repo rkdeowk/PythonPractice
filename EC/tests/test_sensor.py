@@ -1,9 +1,5 @@
 import unittest
 
-from PythonPractice.EC.src.sensors.sensor1 import Sensor1
-from PythonPractice.EC.src.sensors.sensor2 import Sensor2
-from PythonPractice.EC.src.sensors.sensor3 import Sensor3
-
 
 class TestSensor(unittest.TestCase):
     def test_sensor1_connect(self):
