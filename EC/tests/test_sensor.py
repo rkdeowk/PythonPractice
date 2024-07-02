@@ -5,6 +5,8 @@ from PythonPractice.EC.src.sensors.sensor1 import Sensor1
 from PythonPractice.EC.src.sensors.sensor2 import Sensor2
 from PythonPractice.EC.src.sensors.sensor3 import Sensor3
 
+READED_DATA = [1.23, 4.56, 7.89]
+
 
 class TestSensor(unittest.TestCase):
     def setUp(self):
@@ -27,10 +29,10 @@ class TestSensor(unittest.TestCase):
         self.assertTrue(self.sensor1.is_connected())
         mock_is_connected.assert_called_once()
 
-    @patch('PythonPractice.EC.src.sensors.sensor1.Sensor1.read_data', return_value=[1.23, 4.56, 7.89])
+    @patch('PythonPractice.EC.src.sensors.sensor1.Sensor1.read_data', return_value=READED_DATA)
     def test_sensor1_read_data(self, mock_read_data):
         data = self.sensor1.read_data()
-        self.assertEqual(data, [1.23, 4.56, 7.89])
+        self.assertEqual(data, READED_DATA)
         mock_read_data.assert_called_once()
 
     @patch('PythonPractice.EC.src.sensors.sensor1.Sensor1.setting')
@@ -53,10 +55,10 @@ class TestSensor(unittest.TestCase):
         self.assertTrue(self.sensor2.is_connected())
         mock_is_connected.assert_called_once()
 
-    @patch('PythonPractice.EC.src.sensors.sensor2.Sensor2.read_data', return_value=[1.23, 4.56, 7.89])
+    @patch('PythonPractice.EC.src.sensors.sensor2.Sensor2.read_data', return_value=READED_DATA)
     def test_sensor2_read_data(self, mock_read_data):
         data = self.sensor2.read_data()
-        self.assertEqual(data, [1.23, 4.56, 7.89])
+        self.assertEqual(data, READED_DATA)
         mock_read_data.assert_called_once()
 
     @patch('PythonPractice.EC.src.sensors.sensor2.Sensor2.setting')
@@ -79,10 +81,10 @@ class TestSensor(unittest.TestCase):
         self.assertTrue(self.sensor3.is_connected())
         mock_is_connected.assert_called_once()
 
-    @patch('PythonPractice.EC.src.sensors.sensor3.Sensor3.read_data', return_value=[1.23, 4.56, 7.89])
+    @patch('PythonPractice.EC.src.sensors.sensor3.Sensor3.read_data', return_value=READED_DATA)
     def test_sensor3_read_data(self, mock_read_data):
         data = self.sensor3.read_data()
-        self.assertEqual(data, [1.23, 4.56, 7.89])
+        self.assertEqual(data, READED_DATA)
         mock_read_data.assert_called_once()
 
     @patch('PythonPractice.EC.src.sensors.sensor3.Sensor3.setting')
