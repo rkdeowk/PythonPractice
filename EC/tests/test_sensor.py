@@ -1,10 +1,11 @@
 import unittest
 from unittest.mock import patch
+
 from PythonPractice.EC.src.sensors.sensor1 import Sensor1
 from PythonPractice.EC.src.sensors.sensor2 import Sensor2
 from PythonPractice.EC.src.sensors.sensor3 import Sensor3
 
-READED_DATA = [1.23, 4.56, 7.89]
+SAMPLE_DATA = [1.23, 4.56, 7.89]
 
 
 class TestSensor(unittest.TestCase):
@@ -16,35 +17,34 @@ class TestSensor(unittest.TestCase):
         ]
 
     def test_sensor_connect(self):
-        for path, sensor in self.sensors:
-            with patch(f'{path}.connect') as mock_connect:
-                sensor.connect()
-                mock_connect.assert_called_once()
+        self._test_sensor_method('connect')
 
     def test_sensor_disconnect(self):
-        for path, sensor in self.sensors:
-            with patch(f'{path}.disconnect') as mock_disconnect:
-                sensor.disconnect()
-                mock_disconnect.assert_called_once()
+        self._test_sensor_method('disconnect')
 
     def test_sensor_is_connected(self):
-        for path, sensor in self.sensors:
-            with patch(f'{path}.is_connected', return_value=True) as mock_is_connected:
-                self.assertTrue(sensor.is_connected())
-                mock_is_connected.assert_called_once()
+        self._test_sensor_method('is_connected', return_value=True, assertion=self.assertTrue)
 
     def test_sensor_read_data(self):
-        for path, sensor in self.sensors:
-            with patch(f'{path}.read_data', return_value=READED_DATA) as mock_read_data:
-                data = sensor.read_data()
-                self.assertEqual(data, READED_DATA)
-                mock_read_data.assert_called_once()
+        self._test_sensor_method('read_data', return_value=SAMPLE_DATA,
+                                 assertion=lambda x: self.assertEqual(x, SAMPLE_DATA))
 
     def test_sensor_setting(self):
+        self._test_sensor_method('setting', call_args={'param': 'value'})
+
+    def _test_sensor_method(self, method_name, return_value=None, assertion=None, call_args=None):
         for path, sensor in self.sensors:
-            with patch(f'{path}.setting') as mock_setting:
-                sensor.setting(param='value')
-                mock_setting.assert_called_once_with(param='value')
+            with self.subTest(sensor_type=sensor.__class__.__name__):
+                with patch(f'{path}.{method_name}', return_value=return_value) as mock_method:
+                    result = getattr(sensor, method_name)(**(call_args or {}))
+
+                    if call_args:
+                        mock_method.assert_called_once_with(**call_args)
+                    else:
+                        mock_method.assert_called_once()
+
+                    if assertion:
+                        assertion(result)
 
 
 if __name__ == '__main__':
