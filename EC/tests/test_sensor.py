@@ -34,17 +34,32 @@ class TestSensor(unittest.TestCase):
 
     def _test_sensor_method(self, method_name, return_value=None, assertion=None, call_args=None):
         for path, sensor in self.sensors:
-            with self.subTest(sensor_type=sensor.__class__.__name__):
-                with patch(f'{path}.{method_name}', return_value=return_value) as mock_method:
-                    result = getattr(sensor, method_name)(**(call_args or {}))
+            sensor_type = sensor.__class__.__name__
+            with self.subTest(sensor_type=sensor_type):
+                self._run_single_sensor_test(path, sensor, method_name, return_value, assertion, call_args)
 
-                    if call_args:
-                        mock_method.assert_called_once_with(**call_args)
-                    else:
-                        mock_method.assert_called_once()
+    def _run_single_sensor_test(self, path, sensor, method_name, return_value, assertion, call_args):
+        with self._patch_sensor_method(path, method_name, return_value) as mock_method:
+            result = self._call_sensor_method(sensor, method_name, call_args)
+            self._verify_method_call(mock_method, call_args)
+            self._run_assertion(assertion, result)
 
-                    if assertion:
-                        assertion(result)
+    def _patch_sensor_method(self, path, method_name, return_value):
+        return patch(f'{path}.{method_name}', return_value=return_value)
+
+    def _call_sensor_method(self, sensor, method_name, call_args):
+        method = getattr(sensor, method_name)
+        return method(**call_args or {})
+
+    def _verify_method_call(self, mock_method, call_args):
+        if call_args:
+            mock_method.assert_called_once_with(**call_args)
+        else:
+            mock_method.assert_called_once()
+
+    def _run_assertion(self, assertion, result):
+        if assertion:
+            assertion(result)
 
 
 if __name__ == '__main__':
