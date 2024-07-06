@@ -2,17 +2,23 @@ from PythonPractice.EC.src.sensors.sensor import Sensor
 
 
 class Sensor3(Sensor):
+    def __init__(self, id):
+        super().__init__(id)
+        self.__is_connected = False
+
     def connect(self):
-        pass
+        self.__is_connected = True
 
     def disconnect(self):
-        pass
+        self.__is_connected = False
 
     def is_connected(self):
-        pass
+        return self.__is_connected
 
     def read_data(self):
-        pass
+        if not self.__is_connected:
+            raise ConnectionError
+        return [1.23, 4.56, 7.89]
 
     def setting(self, **kwargs):
-        pass
+        self.settings = kwargs

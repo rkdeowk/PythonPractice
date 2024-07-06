@@ -5,61 +5,127 @@ from PythonPractice.EC.src.sensors.sensor1 import Sensor1
 from PythonPractice.EC.src.sensors.sensor2 import Sensor2
 from PythonPractice.EC.src.sensors.sensor3 import Sensor3
 
-SAMPLE_DATA = [1.23, 4.56, 7.89]
+READED_DATA = [1.23, 4.56, 7.89]
+SETTING_PARAM = {
+    'arg1': 'value1',
+    'arg2': 'value2'
+}
 
 
 class TestSensor(unittest.TestCase):
     def setUp(self):
+        super().setUp()
         self.sensors = [
             ('PythonPractice.EC.src.sensors.sensor1.Sensor1', Sensor1(id=1)),
             ('PythonPractice.EC.src.sensors.sensor2.Sensor2', Sensor2(id=2)),
             ('PythonPractice.EC.src.sensors.sensor3.Sensor3', Sensor3(id=3))
         ]
 
-    def test_sensor_connect(self):
-        self._test_sensor_method('connect')
-
-    def test_sensor_disconnect(self):
-        self._test_sensor_method('disconnect')
-
-    def test_sensor_is_connected(self):
-        self._test_sensor_method('is_connected', return_value=True, assertion=self.assertTrue)
-
-    def test_sensor_read_data(self):
-        self._test_sensor_method('read_data', return_value=SAMPLE_DATA,
-                                 assertion=lambda x: self.assertEqual(x, SAMPLE_DATA))
-
-    def test_sensor_setting(self):
-        self._test_sensor_method('setting', call_args={'param': 'value'})
-
-    def _test_sensor_method(self, method_name, return_value=None, assertion=None, call_args=None):
+    def _test_behavior_sensor_method(self, method_name, test):
         for path, sensor in self.sensors:
-            sensor_type = sensor.__class__.__name__
-            with self.subTest(sensor_type=sensor_type):
-                self._run_single_sensor_test(path, sensor, method_name, return_value, assertion, call_args)
+            with self.subTest(sensor_type=sensor.__class__.__name__):
+                with patch(f'{path}.{method_name}') as mock:
+                    test(sensor, mock)
 
-    def _run_single_sensor_test(self, path, sensor, method_name, return_value, assertion, call_args):
-        with self._patch_sensor_method(path, method_name, return_value) as mock_method:
-            result = self._call_sensor_method(sensor, method_name, call_args)
-            self._verify_method_call(mock_method, call_args)
-            self._run_assertion(assertion, result)
+    def test_behavior_sensor_connect(self):
+        def test_behavior_connect(sensor, mock):
+            sensor.connect()
+            mock.assert_called_once()
 
-    def _patch_sensor_method(self, path, method_name, return_value):
-        return patch(f'{path}.{method_name}', return_value=return_value)
+        self._test_behavior_sensor_method('connect', test_behavior_connect)
 
-    def _call_sensor_method(self, sensor, method_name, call_args):
-        method = getattr(sensor, method_name)
-        return method(**call_args or {})
+    def test_behavior_sensor_disconnect(self):
+        def test_behavior_disconnect(sensor, mock):
+            sensor.disconnect()
+            mock.assert_called_once()
 
-    def _verify_method_call(self, mock_method, call_args):
-        if call_args:
-            mock_method.assert_called_once_with(**call_args)
-        else:
-            mock_method.assert_called_once()
+        self._test_behavior_sensor_method('disconnect', test_behavior_disconnect)
 
-    def _run_assertion(self, assertion, result):
-        if assertion:
-            assertion(result)
+    def test_behavior_sensor_is_connected(self):
+        def test_behavior_is_connected(sensor, mock):
+            sensor.connect()
+            sensor.is_connected()
+            mock.assert_called_once()
+
+        self._test_behavior_sensor_method('is_connected', test_behavior_is_connected)
+
+    def test_behavior_sensor_read_data(self):
+        def test_behavior_read_data(sensor, mock):
+            sensor.connect()
+            data = sensor.read_data()
+            mock.assert_called_once()
+
+        self._test_behavior_sensor_method('read_data', test_behavior_read_data)
+
+    def test_behavior_sensor_read_data_not_connected(self):
+        def test_behavior_read_data_not_connected(sensor, mock):
+            mock.side_effect = ConnectionError
+
+            sensor.disconnect()
+            with self.assertRaises(ConnectionError):
+                sensor.read_data()
+            mock.assert_called_once()
+
+        self._test_behavior_sensor_method('read_data', test_behavior_read_data_not_connected)
+
+    def test_behavior_sensor_setting(self):
+        def test_behavior_setting(sensor, mock):
+            sensor.setting(**SETTING_PARAM)
+
+            mock.assert_called_once_with(**SETTING_PARAM)
+
+        self._test_behavior_sensor_method('setting', test_behavior_setting)
+
+    def _test_state_sensor_method(self, test):
+        for _, sensor in self.sensors:
+            with self.subTest(sensor_type=sensor.__class__.__name__):
+                test(sensor)
+
+    def test_state_sensor_connect(self):
+        def test_state_connect(sensor):
+            sensor.connect()
+            self.assertEqual(sensor.is_connected(), True)
+
+        self._test_state_sensor_method(test_state_connect)
+
+    def test_state_sensor_disconnect(self):
+        def test_state_disconnect(sensor):
+            sensor.disconnect()
+            self.assertEqual(sensor.is_connected(), False)
+
+        self._test_state_sensor_method(test_state_disconnect)
+
+    def test_state_sensor_is_connected(self):
+        def test_state_is_connected(sensor):
+            sensor.connect()
+            self.assertEqual(sensor.is_connected(), True)
+            sensor.disconnect()
+            self.assertEqual(sensor.is_connected(), False)
+
+        self._test_state_sensor_method(test_state_is_connected)
+
+    def test_state_sensor_read_data(self):
+        def test_state_read_data(sensor):
+            sensor.connect()
+            data = sensor.read_data()
+            self.assertEqual(data, READED_DATA)
+
+        self._test_state_sensor_method(test_state_read_data)
+
+    def test_state_sensor_read_data_not_connected(self):
+        def test_state_read_data_not_connected(sensor):
+            sensor.disconnect()
+            with self.assertRaises(ConnectionError):
+                sensor.read_data()
+
+        self._test_state_sensor_method(test_state_read_data_not_connected)
+
+    def test_state_sensor_setting(self):
+        def test_state_setting(sensor):
+            sensor.setting(**SETTING_PARAM)
+            self.assertEqual(sensor.settings, SETTING_PARAM)
+
+        self._test_state_sensor_method(test_state_setting)
 
 
 if __name__ == '__main__':
