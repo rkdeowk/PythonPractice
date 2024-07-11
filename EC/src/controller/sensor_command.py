@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.sensors.sensor_interface import ISensor
+from PythonPractice.EC.src.sensors.sensor_interface import ISensor
 
 
 class SensorCommand(ABC):

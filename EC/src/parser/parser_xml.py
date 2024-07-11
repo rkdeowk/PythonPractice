@@ -1,4 +1,4 @@
-from src.parser.parser_interface import IParser
+from PythonPractice.EC.src.parser.parser_interface import IParser
 
 
 class XmlParser(IParser):

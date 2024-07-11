@@ -1,8 +1,8 @@
 from enum import Enum
 
-from src.sensors.sensor1 import Sensor1
-from src.sensors.sensor2 import Sensor2
-from src.sensors.sensor3 import Sensor3
+from PythonPractice.EC.src.sensors.sensor1 import Sensor1
+from PythonPractice.EC.src.sensors.sensor2 import Sensor2
+from PythonPractice.EC.src.sensors.sensor3 import Sensor3
 
 
 class SensorType(str, Enum):

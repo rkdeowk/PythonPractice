@@ -1,4 +1,4 @@
-from src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
+from PythonPractice.EC.src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
 
 
 class MaxProcessingStrategy(IDataProcessingStrategy):

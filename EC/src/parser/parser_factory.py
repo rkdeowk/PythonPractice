@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.parser.parser_json import JsonParser
-from src.parser.parser_xml import XmlParser
+from PythonPractice.EC.src.parser.parser_json import JsonParser
+from PythonPractice.EC.src.parser.parser_xml import XmlParser
 
 
 class AbstractParserFactory(ABC):

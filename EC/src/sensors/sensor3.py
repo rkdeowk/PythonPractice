@@ -1,4 +1,4 @@
-from src.sensors.sensor_interface import ISensor
+from PythonPractice.EC.src.sensors.sensor_interface import ISensor
 
 
 class Sensor3(ISensor):
