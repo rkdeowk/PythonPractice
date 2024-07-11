@@ -1,68 +1,80 @@
 import unittest
-from unittest.mock import patch, MagicMock, Mock
-from PythonPractice.EC.src.controller.sensor_controller import SensorController
-from PythonPractice.EC.src.data_processor.data_processor import DataProcessor
-from PythonPractice.EC.src.sensors.sensor1 import Sensor1
-from PythonPractice.EC.src.sensors.sensor2 import Sensor2
-from PythonPractice.EC.src.sensors.sensor3 import Sensor3
+from unittest.mock import patch
+
+from src.controller.sensor_command import ConnectSensorCommand, DisconnectSensorCommand, GetDataSensorCommand, \
+    IsConnectedSensorCommand, SettingSensorCommand
+from src.controller.sensor_controller import SensorController
+from src.sensors.sensor_factory import SensorFactory, SensorType
+
+SETTING_PARAM = {
+    'arg1': 'value1',
+    'arg2': 'value2'
+}
 
 
 class TestSensorController(unittest.TestCase):
-    def test_collect_and_process_data(self):
-        mock_sensor1 = Mock(Sensor1)
-        mock_sensor2 = Mock(Sensor2)
-        mock_sensor3 = Mock(Sensor3)
-        mock_data_processor = Mock(DataProcessor)
+    def setUp(self):
+        self.sensors = [
+            ('src.sensors.sensor1.Sensor1', SensorFactory.create_sensor(SensorType.SENSOR1, '1')),
+            ('src.sensors.sensor2.Sensor2', SensorFactory.create_sensor(SensorType.SENSOR2, '2')),
+            ('src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
+        ]
 
-        mock_sensor1.connect = MagicMock()
-        mock_sensor1.disconnect = MagicMock()
-        mock_sensor1.read_data.return_value = [1.0, 2.0, 3.0]
+        self.sensor_controller = SensorController()
+        self.sensor_controller.add_sensor(self.sensors[0][1])
+        self.sensor_controller.add_sensor(self.sensors[1][1])
+        self.sensor_controller.add_sensor(self.sensors[2][1])
 
-        mock_sensor2.connect = MagicMock()
-        mock_sensor2.disconnect = MagicMock()
-        mock_sensor2.read_data.return_value = [4.0, 5.0, 6.0]
+    def _test_sensor_controller(self, method_name, test):
+        for path, sensor in self.sensors:
+            with self.subTest(sensor_type=sensor.__class__.__name__):
+                with patch(f'{path}.{method_name}') as mock:
+                    test(self.sensor_controller, sensor, mock)
 
-        mock_sensor3.connect = MagicMock()
-        mock_sensor3.disconnect = MagicMock()
-        mock_sensor3.read_data.return_value = [7.0, 8.0, 9.0]
+    def test_add_sensor(self):
+        self.assertEqual(len(self.sensor_controller._sensors), 3)
 
-        mock_data_processor.process.side_effect = lambda data: sum(data)
+    def test_remove_sensor(self):
+        self.sensor_controller.remove_sensor(self.sensors[1][1])
+        self.sensor_controller.remove_sensor(self.sensors[2][1])
+        self.assertEqual(len(self.sensor_controller._sensors), 1)
+        self.assertEqual(self.sensor_controller._sensors[0], self.sensors[0][1])
 
-        controller = Mock(SensorController)
+    def test_connect_sensor(self):
+        def test_connect(sensor_controller, sensor, mock):
+            sensor_controller.execute_command(ConnectSensorCommand(sensor))
+            mock.assert_called_once()
 
-        controller.sensors = [mock_sensor1, mock_sensor2, mock_sensor3]
-        controller.data_processor = mock_data_processor
+        self._test_sensor_controller('connect', test_connect)
 
-        mock_sensor1.connect()
-        mock_sensor2.connect()
-        mock_sensor3.connect()
+    def test_disconnect_sensor(self):
+        def test_disconnect(sensor_controller, sensor, mock):
+            sensor_controller.execute_command(DisconnectSensorCommand(sensor))
+            mock.assert_called_once()
 
-        controller.collect_and_process_data()
+        self._test_sensor_controller('disconnect', test_disconnect)
 
-        mock_sensor1.read_data()
-        mock_sensor2.read_data()
-        mock_sensor3.read_data()
+    def test_is_connected_sensor(self):
+        def test_is_connected(sensor_controller, sensor, mock):
+            sensor_controller.execute_command(IsConnectedSensorCommand(sensor))
+            mock.assert_called_once()
 
-        mock_data_processor.process([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0])
+        self._test_sensor_controller('is_connected', test_is_connected)
 
-        mock_sensor1.disconnect()
-        mock_sensor2.disconnect()
-        mock_sensor3.disconnect()
+    def test_get_data_sensor(self):
+        def test_get_data(sensor_controller, sensor, mock):
+            sensor_controller.execute_command(ConnectSensorCommand(sensor))
+            sensor_controller.execute_command(GetDataSensorCommand(sensor))
+            mock.assert_called_once()
 
-        # assert
-        mock_sensor1.connect.assert_called_once()
-        mock_sensor2.connect.assert_called_once()
-        mock_sensor3.connect.assert_called_once()
+        self._test_sensor_controller('get_data', test_get_data)
 
-        mock_sensor1.read_data.assert_called_once()
-        mock_sensor2.read_data.assert_called_once()
-        mock_sensor3.read_data.assert_called_once()
+    def test_setting_sensor(self):
+        def test_setting(sensor_controller, sensor, mock):
+            sensor_controller.execute_command(SettingSensorCommand(sensor, **SETTING_PARAM))
+            mock.assert_called_once_with(**SETTING_PARAM)
 
-        mock_data_processor.process.assert_called_once_with([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0])
-
-        mock_sensor1.disconnect.assert_called_once()
-        mock_sensor2.disconnect.assert_called_once()
-        mock_sensor3.disconnect.assert_called_once()
+        self._test_sensor_controller('setting', test_setting)
 
 
 if __name__ == '__main__':

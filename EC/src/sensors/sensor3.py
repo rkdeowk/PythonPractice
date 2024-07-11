@@ -1,24 +1,23 @@
-from PythonPractice.EC.src.sensors.sensor import Sensor
+from src.sensors.sensor_interface import ISensor
 
 
-class Sensor3(Sensor):
-    def __init__(self, id):
-        super().__init__(id)
-        self.__is_connected = False
+class Sensor3(ISensor):
+    def __init__(self, sensor_id):
+        super().__init__(sensor_id)
 
     def connect(self):
-        self.__is_connected = True
+        self._is_connected = True
 
     def disconnect(self):
-        self.__is_connected = False
+        self._is_connected = False
 
     def is_connected(self):
-        return self.__is_connected
+        return self._is_connected
 
-    def read_data(self):
-        if not self.__is_connected:
+    def get_data(self):
+        if not self._is_connected:
             raise ConnectionError
         return [1.23, 4.56, 7.89]
 
     def setting(self, **kwargs):
-        self.settings = kwargs
+        self._settings = kwargs

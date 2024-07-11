@@ -1,15 +1,52 @@
 import unittest
-from unittest.mock import Mock
-from PythonPractice.EC.src.data_processor.data_processor import DataProcessor
+
+from src.data_processor.data_processor import DataProcessor
+from src.data_processor.strategy.strategy_average import AverageProcessingStrategy
+from src.data_processor.strategy.strategy_find_peak import FindPeakProcessingStrategy
+from src.data_processor.strategy.strategy_max import MaxProcessingStrategy
+from src.data_processor.strategy.strategy_min import MinProcessingStrategy
+
+DATA = [10, 20, 30, 40, 30, 20, 10]
 
 
 class TestDataProcessor(unittest.TestCase):
-    def test_process(self):
-        processor = Mock(Spec=DataProcessor)
-        processor.process.side_effect = lambda data: sum(data)
-        result = processor.process([1.23, 4.56, 7.89])
-        self.assertEqual(result, 13.68)
-        processor.process.assert_called_once_with([1.23, 4.56, 7.89])
+    def test_set_strategy(self):
+        strategy = AverageProcessingStrategy()
+        data_processor = DataProcessor()
+        data_processor.set_strategy(strategy)
+        self.assertEqual(data_processor.get_strategy(), strategy)
+
+    def test_average_strategy(self):
+        data_processor = DataProcessor()
+        data_processor.set_strategy(AverageProcessingStrategy())
+        result = data_processor.process(DATA)
+        self.assertEqual(result, sum(DATA) / len(DATA))
+
+    def test_max_strategy(self):
+        data_processor = DataProcessor()
+        data_processor.set_strategy(MaxProcessingStrategy())
+        result = data_processor.process(DATA)
+        self.assertEqual(result, max(DATA))
+
+    def test_min_strategy(self):
+        data_processor = DataProcessor()
+        data_processor.set_strategy(MinProcessingStrategy())
+        result = data_processor.process(DATA)
+        self.assertEqual(result, min(DATA))
+
+    def test_find_peak_strategy(self):
+        data_processor = DataProcessor()
+        data_processor.set_strategy(FindPeakProcessingStrategy(threshold=10))
+        peak, peak_indices = data_processor.process(DATA)
+        self.assertEqual(peak, [40])
+        self.assertEqual(peak_indices, [3])
+
+    def test_find_peak_fail_strategy(self):
+        data_processor = DataProcessor()
+        data_processor.set_strategy(FindPeakProcessingStrategy(threshold=50))
+        peak, peak_indices = data_processor.process(DATA)
+        self.assertEqual(peak, [])
+        self.assertEqual(peak_indices, [])
 
 
 if __name__ == '__main__':

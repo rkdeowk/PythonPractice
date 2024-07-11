@@ -1,9 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from PythonPractice.EC.src.sensors.sensor1 import Sensor1
-from PythonPractice.EC.src.sensors.sensor2 import Sensor2
-from PythonPractice.EC.src.sensors.sensor3 import Sensor3
+from src.sensors.sensor_factory import SensorFactory, SensorType
 
 READED_DATA = [1.23, 4.56, 7.89]
 SETTING_PARAM = {
@@ -16,9 +14,9 @@ class TestSensor(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.sensors = [
-            ('PythonPractice.EC.src.sensors.sensor1.Sensor1', Sensor1(id=1)),
-            ('PythonPractice.EC.src.sensors.sensor2.Sensor2', Sensor2(id=2)),
-            ('PythonPractice.EC.src.sensors.sensor3.Sensor3', Sensor3(id=3))
+            ('src.sensors.sensor1.Sensor1', SensorFactory.create_sensor(SensorType.SENSOR1, '1')),
+            ('src.sensors.sensor2.Sensor2', SensorFactory.create_sensor(SensorType.SENSOR2, '2')),
+            ('src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
         ]
 
     def _test_behavior_sensor_method(self, method_name, test):
@@ -49,35 +47,34 @@ class TestSensor(unittest.TestCase):
 
         self._test_behavior_sensor_method('is_connected', test_behavior_is_connected)
 
-    def test_behavior_sensor_read_data(self):
-        def test_behavior_read_data(sensor, mock):
+    def test_behavior_sensor_get_data(self):
+        def test_behavior_get_data(sensor, mock):
             sensor.connect()
-            data = sensor.read_data()
+            data = sensor.get_data()
             mock.assert_called_once()
 
-        self._test_behavior_sensor_method('read_data', test_behavior_read_data)
+        self._test_behavior_sensor_method('get_data', test_behavior_get_data)
 
-    def test_behavior_sensor_read_data_not_connected(self):
-        def test_behavior_read_data_not_connected(sensor, mock):
+    def test_behavior_sensor_get_data_not_connected(self):
+        def test_behavior_get_data_not_connected(sensor, mock):
             mock.side_effect = ConnectionError
 
             sensor.disconnect()
             with self.assertRaises(ConnectionError):
-                sensor.read_data()
+                sensor.get_data()
             mock.assert_called_once()
 
-        self._test_behavior_sensor_method('read_data', test_behavior_read_data_not_connected)
+        self._test_behavior_sensor_method('get_data', test_behavior_get_data_not_connected)
 
     def test_behavior_sensor_setting(self):
         def test_behavior_setting(sensor, mock):
             sensor.setting(**SETTING_PARAM)
-
             mock.assert_called_once_with(**SETTING_PARAM)
 
         self._test_behavior_sensor_method('setting', test_behavior_setting)
 
     def _test_state_sensor_method(self, test):
-        for _, sensor in self.sensors:
+        for path, sensor in self.sensors:
             with self.subTest(sensor_type=sensor.__class__.__name__):
                 test(sensor)
 
@@ -104,21 +101,21 @@ class TestSensor(unittest.TestCase):
 
         self._test_state_sensor_method(test_state_is_connected)
 
-    def test_state_sensor_read_data(self):
-        def test_state_read_data(sensor):
+    def test_state_sensor_get_data(self):
+        def test_state_get_data(sensor):
             sensor.connect()
-            data = sensor.read_data()
+            data = sensor.get_data()
             self.assertEqual(data, READED_DATA)
 
-        self._test_state_sensor_method(test_state_read_data)
+        self._test_state_sensor_method(test_state_get_data)
 
-    def test_state_sensor_read_data_not_connected(self):
-        def test_state_read_data_not_connected(sensor):
+    def test_state_sensor_get_data_not_connected(self):
+        def test_state_get_data_not_connected(sensor):
             sensor.disconnect()
             with self.assertRaises(ConnectionError):
-                sensor.read_data()
+                sensor.get_data()
 
-        self._test_state_sensor_method(test_state_read_data_not_connected)
+        self._test_state_sensor_method(test_state_get_data_not_connected)
 
     def test_state_sensor_setting(self):
         def test_state_setting(sensor):
