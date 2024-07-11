@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from PythonPractice.EC.src.controller.sensor_command import ConnectSensorCommand, DisconnectSensorCommand, \
     IsConnectedSensorCommand, GetDataSensorCommand, SettingSensorCommand
-from PythonPractice.EC.src.controller.sensor_controller import SensorController
+from PythonPractice.EC.src.controller.sensor_controller import SensorController, SensorManager
 from PythonPractice.EC.src.sensors.sensor_factory import SensorFactory, SensorType
 
 SETTING_PARAM = {
@@ -20,10 +20,11 @@ class TestSensorController(unittest.TestCase):
             ('PythonPractice.EC.src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
         ]
 
-        self.sensor_controller = SensorController()
-        self.sensor_controller.add_sensor(self.sensors[0][1])
-        self.sensor_controller.add_sensor(self.sensors[1][1])
-        self.sensor_controller.add_sensor(self.sensors[2][1])
+        self.sensor_manager = SensorManager()
+        self.sensor_manager.add_sensor(self.sensors[0][1])
+        self.sensor_manager.add_sensor(self.sensors[1][1])
+        self.sensor_manager.add_sensor(self.sensors[2][1])
+        self.sensor_controller = SensorController(self.sensor_manager)
 
     def _test_sensor_controller(self, method_name, test):
         for path, sensor in self.sensors:
@@ -32,13 +33,13 @@ class TestSensorController(unittest.TestCase):
                     test(self.sensor_controller, sensor, mock)
 
     def test_add_sensor(self):
-        self.assertEqual(len(self.sensor_controller._sensors), 3)
+        self.assertEqual(len(self.sensor_manager.sensors), 3)
 
     def test_remove_sensor(self):
-        self.sensor_controller.remove_sensor(self.sensors[1][1])
-        self.sensor_controller.remove_sensor(self.sensors[2][1])
-        self.assertEqual(len(self.sensor_controller._sensors), 1)
-        self.assertEqual(self.sensor_controller._sensors[0], self.sensors[0][1])
+        self.sensor_manager.remove_sensor(self.sensors[1][1])
+        self.sensor_manager.remove_sensor(self.sensors[2][1])
+        self.assertEqual(len(self.sensor_manager.sensors), 1)
+        self.assertEqual(self.sensor_manager.sensors[0], self.sensors[0][1])
 
     def test_connect_sensor(self):
         def test_connect(sensor_controller, sensor, mock):

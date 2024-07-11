@@ -3,4 +3,10 @@ from PythonPractice.EC.src.data_processor.strategy.strategy_interface import IDa
 
 class MaxProcessingStrategy(IDataProcessingStrategy):
     def process_data(self, data, **kwargs):
-        return max(data) if data else None
+        if not data:
+            return None
+
+        try:
+            return max(data)
+        except Exception as e:
+            return None
