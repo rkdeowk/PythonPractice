@@ -15,9 +15,9 @@ SETTING_PARAM = {
 class TestSensorController(unittest.TestCase):
     def setUp(self):
         self.sensors = [
-            ('src.sensors.sensor1.Sensor1', SensorFactory.create_sensor(SensorType.SENSOR1, '1')),
-            ('src.sensors.sensor2.Sensor2', SensorFactory.create_sensor(SensorType.SENSOR2, '2')),
-            ('src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
+            ('PythonPractice.EC.src.sensors.sensor1.Sensor1', SensorFactory.create_sensor(SensorType.SENSOR1, '1')),
+            ('PythonPractice.EC.src.sensors.sensor2.Sensor2', SensorFactory.create_sensor(SensorType.SENSOR2, '2')),
+            ('PythonPractice.EC.src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
         ]
 
         self.sensor_controller = SensorController()
