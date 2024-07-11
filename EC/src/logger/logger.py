@@ -2,6 +2,8 @@ import logging
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
 
+from PythonPractice.EC.src.di_container import DIContainer
+
 
 class Logger:
     def __init__(self, name: str, level=logging.INFO):
@@ -22,3 +24,7 @@ class Logger:
 
     def get_logger(self):
         return self.logger
+
+
+container = DIContainer()
+container.register('Logger', Logger('AppLoger').get_logger())
