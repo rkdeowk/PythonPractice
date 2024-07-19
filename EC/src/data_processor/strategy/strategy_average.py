@@ -1,12 +1,9 @@
-from PythonPractice.EC.src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
+from src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
 
 
 class AverageProcessingStrategy(IDataProcessingStrategy):
     def process_data(self, data, **kwargs):
-        if not data:
+        if len(data) == 0:
             return None
 
-        try:
-            return sum(data) / len(data)
-        except Exception as e:
-            return None
+        return sum(data) / len(data)

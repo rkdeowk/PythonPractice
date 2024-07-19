@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from PythonPractice.EC.src.sensors.sensor_factory import SensorFactory, SensorType
+from src.factory.factory_producer import FactoryProducer
+from src.sensors.sensor_type import SensorType
 
 READED_DATA = [1.23, 4.56, 7.89]
 SETTING_PARAM = {
@@ -12,11 +13,13 @@ SETTING_PARAM = {
 
 class TestSensor(unittest.TestCase):
     def setUp(self):
-        super().setUp()
+        factory_producer = FactoryProducer()
+        self.sensor1 = factory_producer.get_factory(SensorType.SENSOR1).create_sensor('1')
+        self.sensor2 = factory_producer.get_factory(SensorType.SENSOR2).create_sensor('2')
+
         self.sensors = [
-            ('PythonPractice.EC.src.sensors.sensor1.Sensor1', SensorFactory.create_sensor(SensorType.SENSOR1, '1')),
-            ('PythonPractice.EC.src.sensors.sensor2.Sensor2', SensorFactory.create_sensor(SensorType.SENSOR2, '2')),
-            ('PythonPractice.EC.src.sensors.sensor3.Sensor3', SensorFactory.create_sensor(SensorType.SENSOR3, '3'))
+            ('src.sensors.sensor1.Sensor1', self.sensor1),
+            ('src.sensors.sensor2.Sensor2', self.sensor2)
         ]
 
     def _test_behavior_sensor_method(self, method_name, test):

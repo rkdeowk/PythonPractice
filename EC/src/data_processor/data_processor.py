@@ -1,4 +1,4 @@
-from PythonPractice.EC.src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
+from src.data_processor.strategy.strategy_interface import IDataProcessingStrategy
 
 
 class DataProcessor:
