@@ -1,33 +1,35 @@
 from abc import ABC, abstractmethod
 
+from PythonPractice.EC.src.logger.logger import Logger
+
 
 class ISensor(ABC):
     def __init__(self, sensor_id: str):
         self._sensor_id = sensor_id
         self._settings = {}
         self._is_connected = False
+        self.logger = Logger(self.__class__.__name__).get_logger()
+        self.logger.info(f'create {self.__class__.__name__}')
 
     @abstractmethod
     def connect(self):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement connect method")
+        pass
 
     @abstractmethod
     def disconnect(self):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement disconnect method")
+        pass
 
     @abstractmethod
     def is_connected(self):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement is_connected method")
+        pass
 
     @abstractmethod
     def get_data(self):
-        if not self.is_connected:
-            raise ConnectionError(f"Sensor {self._sensor_id} is not connected.")
-        raise NotImplementedError(f"{self.__class__.__name__} must implement read_data method")
+        pass
 
     @abstractmethod
     def setting(self, **kwargs):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement setting method")
+        pass
 
     @property
     def sensor_id(self):

@@ -7,9 +7,11 @@ class Sensor2(ISensor):
 
     def connect(self):
         self._is_connected = True
+        self.logger.info(f'connect {self._sensor_id}')
 
     def disconnect(self):
         self._is_connected = False
+        self.logger.info(f'disconnect {self._sensor_id}')
 
     def is_connected(self):
         return self._is_connected
@@ -17,7 +19,11 @@ class Sensor2(ISensor):
     def get_data(self):
         if not self._is_connected:
             raise ConnectionError
-        return [1.23, 4.56, 7.89]
+
+        data = [1.23, 4.56, 7.89]
+        self.logger.info(f'get data {self._sensor_id}, data: {data}')
+        return data
 
     def setting(self, **kwargs):
         self._settings = kwargs
+        self.logger.info(f'setting {self._sensor_id} {kwargs.items()}')

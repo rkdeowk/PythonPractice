@@ -20,8 +20,8 @@ class TestSensorController(unittest.TestCase):
         self.sensor2 = factory_producer.get_factory(SensorType.SENSOR2).create_sensor('2')
 
         self.sensors = [
-            ('src.sensors.sensor1.Sensor1', self.sensor1),
-            ('src.sensors.sensor2.Sensor2', self.sensor2)
+            ('PythonPractice.EC.src.sensors.sensor1.Sensor1', self.sensor1),
+            ('PythonPractice.EC.src.sensors.sensor2.Sensor2', self.sensor2)
         ]
 
         self.sensor_controller = SensorController()
