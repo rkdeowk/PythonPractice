@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch
 
-from src.controller.sensor_command import ConnectSensorCommand, DisconnectSensorCommand, GetDataSensorCommand, \
-    IsConnectedSensorCommand, SettingSensorCommand
-from src.controller.sensor_controller import SensorController
-from src.factory.factory_producer import FactoryProducer
-from src.sensors.sensor_type import SensorType
+from PythonPractice.EC.src.controller.sensor_command import ConnectSensorCommand, DisconnectSensorCommand, \
+    IsConnectedSensorCommand, GetDataSensorCommand, SettingSensorCommand
+from PythonPractice.EC.src.controller.sensor_controller import SensorController
+from PythonPractice.EC.src.factory.factory_producer import FactoryProducer
+from PythonPractice.EC.src.sensors.sensor_type import SensorType
 
 SETTING_PARAM = {
     'arg1': 'value1',

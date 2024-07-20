@@ -1,8 +1,8 @@
 import unittest
 
-from src.data_processor.data_processor import DataProcessor
-from src.data_processor.strategy.strategy_average import AverageProcessingStrategy
-from src.data_processor.strategy.strategy_find_peak import FindPeakProcessingStrategy
+from PythonPractice.EC.src.data_processor.data_processor import DataProcessor
+from PythonPractice.EC.src.data_processor.strategy.strategy_average import AverageProcessingStrategy
+from PythonPractice.EC.src.data_processor.strategy.strategy_find_peak import FindPeakProcessingStrategy
 
 DATA = [10, 20, 30, 40, 30, 20, 10]
 

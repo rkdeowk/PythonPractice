@@ -1,7 +1,7 @@
 import unittest
 
-from src.factory.factory_producer import FactoryProducer
-from src.sensors.sensor_type import SensorType
+from PythonPractice.EC.src.factory.factory_producer import FactoryProducer
+from PythonPractice.EC.src.sensors.sensor_type import SensorType
 
 
 class TestParser(unittest.TestCase):

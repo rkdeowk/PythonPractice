@@ -1,6 +1,6 @@
-from src.factory.factory_abstract import AbstractFactory
-from src.parser.parser_sensor1 import Sensor1Parser
-from src.sensors.sensor1 import Sensor1
+from PythonPractice.EC.src.factory.factory_abstract import AbstractFactory
+from PythonPractice.EC.src.parser.parser_sensor1 import Sensor1Parser
+from PythonPractice.EC.src.sensors.sensor1 import Sensor1
 
 
 class Sensor1Factory(AbstractFactory):

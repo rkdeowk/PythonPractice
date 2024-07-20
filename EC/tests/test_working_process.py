@@ -1,11 +1,11 @@
 import unittest
 
-from src.controller.sensor_command import ConnectSensorCommand, GetDataSensorCommand
-from src.controller.sensor_controller import SensorController
-from src.data_processor.data_processor import DataProcessor
-from src.data_processor.strategy.strategy_average import AverageProcessingStrategy
-from src.factory.factory_producer import FactoryProducer
-from src.sensors.sensor_type import SensorType
+from PythonPractice.EC.src.controller.sensor_command import ConnectSensorCommand, GetDataSensorCommand
+from PythonPractice.EC.src.controller.sensor_controller import SensorController
+from PythonPractice.EC.src.data_processor.data_processor import DataProcessor
+from PythonPractice.EC.src.data_processor.strategy.strategy_average import AverageProcessingStrategy
+from PythonPractice.EC.src.factory.factory_producer import FactoryProducer
+from PythonPractice.EC.src.sensors.sensor_type import SensorType
 
 
 class TestAll(unittest.TestCase):

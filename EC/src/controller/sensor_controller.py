@@ -1,5 +1,5 @@
-from src.controller.sensor_command import SensorCommand
-from src.sensors.sensor_interface import ISensor
+from PythonPractice.EC.src.controller.sensor_command import SensorCommand
+from PythonPractice.EC.src.sensors.sensor_interface import ISensor
 
 
 class SensorController:

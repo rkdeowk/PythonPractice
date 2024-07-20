@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from src.factory.factory_producer import FactoryProducer
-from src.sensors.sensor_type import SensorType
+from PythonPractice.EC.src.factory.factory_producer import FactoryProducer
+from PythonPractice.EC.src.sensors.sensor_type import SensorType
 
 READED_DATA = [1.23, 4.56, 7.89]
 SETTING_PARAM = {
